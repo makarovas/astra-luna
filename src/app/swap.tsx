@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  //  MsgExecuteContract,
-  useShuttle,
-} from "@delphi-labs/shuttle-react";
 // import { useLCDClient } from "@terra-money/wallet-provider";
-import { useConnectedWallet, useWallet } from "@terra-money/wallet-kit";
 // import BigNumber from "bignumber.js";
 import { useState } from "react";
-import { toast } from "react-toastify";
 // import { getTokenDecimals } from "./helpers/tokens";
 
 const NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS =
@@ -16,17 +10,10 @@ const NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS =
 
 export function Swap() {
   const [amount, setAmount] = useState("");
-  const shuttle = useShuttle();
-  const connectedWallet = useConnectedWallet();
-  const { status, network, availableWallets } = useWallet();
+  // const connectedWallet = useConnectedWallet();
   // const lcd = useLCDClient();
 
   const handleSwap = async () => {
-    if (!connectedWallet) {
-      toast("Please connect your wallet!");
-      return;
-    }
-
     // Assuming the contract requires an "execute_swap" message with these parameters
     const swapMsg = {
       swap: {
@@ -89,7 +76,7 @@ export function Swap() {
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Amount"
       />
-      <button onClick={handleSwap}>Swap</button>
+      <button onClick={() => console.log("Swap")}>Swap</button>
     </div>
   );
 }

@@ -2,18 +2,41 @@
 import { type AppRouter } from "@/server/api/root";
 import { ShuttleProvider } from "@delphi-labs/shuttle-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getInitialConfig } from "@terra-money/wallet-kit";
 import "react-toastify/dist/ReactToastify.css";
-// import {
-//   WalletProvider,
-//   getChainOptions,
-//   type WalletControllerChainOptions,
-// } from "@terra-money/wallet-provider";
 
-import { WalletProvider, getInitialConfig } from "@terra-money/wallet-kit";
-
+import {
+  KeplrExtensionProvider,
+  KeplrMobileProvider,
+  LeapCosmosExtensionProvider,
+  LeapCosmosMobileProvider,
+} from "@delphi-labs/shuttle-react";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useEffect, useState } from "react";
+
+import { TERRA_MAINNET, TERRA_TESTNET } from "@/config/networks";
+
+const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
+
+const extensionProviders = [
+  new LeapCosmosExtensionProvider({
+    networks: [TERRA_MAINNET, TERRA_TESTNET],
+  }),
+
+  new KeplrExtensionProvider({
+    networks: [TERRA_MAINNET, TERRA_TESTNET],
+  }),
+];
+
+const mobileProviders = [
+  new KeplrMobileProvider({
+    networks: [TERRA_MAINNET, TERRA_TESTNET],
+  }),
+  new LeapCosmosMobileProvider({
+    networks: [TERRA_MAINNET, TERRA_TESTNET],
+  }),
+];
 
 import Toasty from "@/app/components/Toasty";
 import SuperJSON from "superjson";
@@ -72,25 +95,26 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   );
 
   if (!defaultNetworks) {
-    return <div>Loading...</div>;
+    return <div>Loading</div>;
   }
 
   return (
-    <WalletProvider defaultNetworks={defaultNetworks}>
-      <ShuttleProvider
-        extensionProviders={[]}
-        mobileProviders={[]}
-        persistent
-        {...getShuttleEnvironment()}
-      >
-        <QueryClientProvider client={queryClient}>
-          <api.Provider client={trpcClient} queryClient={queryClient}>
-            {props.children}
-            <Toasty />
-          </api.Provider>
-        </QueryClientProvider>
-      </ShuttleProvider>
-    </WalletProvider>
+    // <WalletProvider defaultNetworks={defaultNetworks}>
+    <ShuttleProvider
+      walletConnectProjectId={WC_PROJECT_ID}
+      extensionProviders={extensionProviders}
+      mobileProviders={mobileProviders}
+      persistent
+      {...getShuttleEnvironment()}
+    >
+      <QueryClientProvider client={queryClient}>
+        <api.Provider client={trpcClient} queryClient={queryClient}>
+          {props.children}
+          <Toasty />
+        </api.Provider>
+      </QueryClientProvider>
+    </ShuttleProvider>
+    // </WalletProvider>
   );
 }
 
