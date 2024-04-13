@@ -5,9 +5,10 @@ import {
   useShuttle,
 } from "@delphi-labs/shuttle-react";
 // import { useLCDClient } from "@terra-money/wallet-provider";
-import { useWallet } from "@terra-money/wallet-kit";
+import { useConnectedWallet, useWallet } from "@terra-money/wallet-kit";
 // import BigNumber from "bignumber.js";
 import { useState } from "react";
+import { toast } from "react-toastify";
 // import { getTokenDecimals } from "./helpers/tokens";
 
 const NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS =
@@ -16,13 +17,13 @@ const NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS =
 export function Swap() {
   const [amount, setAmount] = useState("");
   const shuttle = useShuttle();
-  console.log(useWallet());
-  const connectedWallet = useWallet();
+  const connectedWallet = useConnectedWallet();
+  const { status, network, availableWallets } = useWallet();
   // const lcd = useLCDClient();
 
   const handleSwap = async () => {
     if (!connectedWallet) {
-      alert("Please connect your wallet.");
+      toast("Please connect your wallet!");
       return;
     }
 
