@@ -2,7 +2,7 @@
 import { type AppRouter } from "@/server/api/root";
 import { ShuttleProvider } from "@delphi-labs/shuttle-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import "react-toastify/dist/ReactToastify.css";
 // import {
 //   WalletProvider,
 //   getChainOptions,
@@ -15,6 +15,7 @@ import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useEffect, useState } from "react";
 
+import Toasty from "@/app/components/Toasty";
 import SuperJSON from "superjson";
 
 function getShuttleEnvironment() {
@@ -85,6 +86,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <api.Provider client={trpcClient} queryClient={queryClient}>
             {props.children}
+            <Toasty />
           </api.Provider>
         </QueryClientProvider>
       </ShuttleProvider>
