@@ -22,8 +22,8 @@ export const TERRA_TESTNET: Network = {
   name: "Terra 2 Testnet",
   chainId: "pisco-1",
   chainPrefix: "terra",
-  rpc: "https://multichain-nodes.astroport.fi/pisco-1/rpc/",
-  rest: "https://multichain-nodes.astroport.fi/pisco-1/lcd/",
+  rpc: "https://pisco-rpc.terra.dev/",
+  rest: "https://pisco-lcd.terra.dev/",
   bip44: {
     coinType: 330,
   },

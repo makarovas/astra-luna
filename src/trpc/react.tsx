@@ -99,7 +99,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   }
 
   return (
-    // <WalletProvider defaultNetworks={defaultNetworks}>
     <ShuttleProvider
       walletConnectProjectId={WC_PROJECT_ID}
       extensionProviders={extensionProviders}
@@ -114,7 +113,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         </api.Provider>
       </QueryClientProvider>
     </ShuttleProvider>
-    // </WalletProvider>
   );
 }
 

@@ -1,82 +1,132 @@
 "use client";
 
-// import { useLCDClient } from "@terra-money/wallet-provider";
-// import BigNumber from "bignumber.js";
+import { useShuttle } from "@delphi-labs/shuttle-react";
+import BigNumber from "bignumber.js";
 import { useState } from "react";
-// import { getTokenDecimals } from "./helpers/tokens";
 
-const NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS =
-  process.env.NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS;
+import { fromNetworkToNativeSymbol } from "@/config/networks";
+import { POOLS } from "@/config/pools";
+import { useShuttlePortStore } from "@/config/store";
+import { DEFAULT_TOKEN_DECIMALS, TOKENS } from "@/config/tokens";
+import useBalance from "@/hooks/useBalance";
+import useFeeEstimate from "@/hooks/useFeeEstimate";
+import useSwap from "@/hooks/useSwap";
+import useWallet from "@/hooks/useWallet";
 
 export function Swap() {
-  const [amount, setAmount] = useState("");
-  // const connectedWallet = useConnectedWallet();
-  // const lcd = useLCDClient();
+  const { broadcast } = useShuttle();
+  const wallet = useWallet();
+  const currentNetworkId = useShuttlePortStore(
+    (state) => state.currentNetworkId,
+  );
 
-  const handleSwap = async () => {
-    // Assuming the contract requires an "execute_swap" message with these parameters
-    const swapMsg = {
-      swap: {
-        offer_asset: {
-          amount: amount,
-          info: {
-            token: {
-              contract_addr: "terra1...astro_token_address", // ASTRO token contract address
-            },
-          },
-        },
-      },
-    };
+  const poolAddress = POOLS[currentNetworkId]?.astroNative ?? "";
+  const [token1, setToken1] = useState(TOKENS[currentNetworkId]?.native ?? "");
+  const [token2, setToken2] = useState(TOKENS[currentNetworkId]?.astro ?? "");
+  const [token1Amount, setToken1Amount] = useState("0");
 
-    try {
-      // const execute = new MsgExecuteContract(
-      //   connectedWallet.addresses, // sender address
-      //   NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS, // ASTRO-LUNA pool address
-      //   swapMsg, // message
-      //   { uluna: 1000 }, // send "1000" uluna along with the swap message if needed for the swap fee
-      // );
+  const token1Balance = useBalance(token1);
+  const token2Balance = useBalance(token2);
+  const [isSwapping, setIsSwapping] = useState(false);
 
-      // const execute = new MsgExecuteContract({
-      //   sender: connectedWallet.addresses[0]!, // sender address
-      //   contract: NEXT_PUBLIC_CLIENTVAR_ASTRO_LUNA_POOL_ADDRESS!,
-      //   msg: {
-      //     send: {
-      //       amount: BigNumber(amount)
-      //         .times(getTokenDecimals(offerAssetAddress))
-      //         .toString(),
-      //       contract: poolAddress,
-      //       msg: objectToBase64({
-      //         swap: {
-      //           max_spread: slippage,
-      //           belief_price: BigNumber(simulate.data?.beliefPrice || "1")
-      //             .toFixed(18)
-      //             .toString(),
-      //         },
-      //       }),
-      //     },
-      //   },
-      // });
+  const swap = useSwap({
+    amount: token1Amount,
+    offerAssetAddress: token1,
+    returnAssetAddress: token2,
+    poolAddress,
+  });
 
-      // const result = await connectedWallet.post({
-      //   msgs: [execute],
-      // });
+  const { data: swapFeeEstimate } = useFeeEstimate({
+    messages: swap.msgs,
+  });
 
-      // console.log("Swap transaction result:", result);
-      console.log("Swap transaction result:", "result");
-    } catch (error) {
-      console.error("Error executing swap:", error);
-    }
+  const onSubmit = () => {
+    setIsSwapping(true);
+    broadcast({
+      wallet,
+      messages: swap.msgs,
+      feeAmount: swapFeeEstimate?.fee?.amount,
+      gasLimit: swapFeeEstimate?.gasLimit,
+    })
+      .then((result) => {
+        console.log("result", result);
+      })
+      .catch((error) => {
+        console.error("Broadcast error", error);
+      })
+      .finally(() => {
+        setIsSwapping(false);
+        setToken1Amount("0");
+        void token1Balance.refetch();
+        void token2Balance.refetch();
+      });
   };
 
   return (
-    <div>
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Amount"
-      />
-      <button onClick={() => console.log("Swap")}>Swap</button>
-    </div>
+    <>
+      <h2>Swap</h2>
+
+      {!poolAddress && <p>Pool not found.</p>}
+
+      {poolAddress && (
+        <>
+          <div>
+            <select
+              value={token1}
+              onChange={(e) => {
+                const token = e.target.value;
+                if (token !== token1) {
+                  setToken1(token);
+                  setToken2(token1);
+                }
+              }}
+            >
+              <option value={TOKENS[currentNetworkId]!.native}>
+                {fromNetworkToNativeSymbol(currentNetworkId)}
+              </option>
+              <option value={TOKENS[currentNetworkId]!.astro}>ASTRO</option>
+            </select>
+            <input
+              value={token1Amount}
+              onChange={(e) => setToken1Amount(e.target.value)}
+            />
+            <p>Balance: {token1Balance.data}</p>
+          </div>
+
+          <select
+            value={token2}
+            onChange={(e) => {
+              const token = e.target.value;
+              if (token !== token2) {
+                setToken1(token2);
+                setToken2(token);
+              }
+            }}
+          >
+            <option value={TOKENS[currentNetworkId]!.native}>
+              {fromNetworkToNativeSymbol(currentNetworkId)}
+            </option>
+            <option value={TOKENS[currentNetworkId]!.astro}>ASTRO</option>
+          </select>
+          <input disabled value={swap.simulate.data?.amount ?? "0"} />
+          <p>Balance: {token2Balance.data}</p>
+          <button
+            onClick={onSubmit}
+            disabled={!swapFeeEstimate?.fee || isSwapping}
+          >
+            {isSwapping ? "Processing..." : "Swap"}
+          </button>
+          {swapFeeEstimate?.fee && (
+            <p>
+              Fee:{" "}
+              {BigNumber(swapFeeEstimate.fee.amount)
+                .div(DEFAULT_TOKEN_DECIMALS || 1)
+                .toString()}{" "}
+              {swapFeeEstimate.fee.denom}
+            </p>
+          )}
+        </>
+      )}
+    </>
   );
 }
