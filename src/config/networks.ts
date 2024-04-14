@@ -38,7 +38,7 @@ export const TERRA_TESTNET: Network = {
 
 export const DEFAULT_MAINNET = TERRA_TESTNET;
 
-export const networks = [TERRA_MAINNET, TERRA_TESTNET];
+export const networks = [TERRA_TESTNET, TERRA_MAINNET];
 
 export function getNetworkByChainId(chainId: string): Network {
   const network = networks.find((network) => network.chainId === chainId);

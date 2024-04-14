@@ -21,20 +21,20 @@ const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
 
 const extensionProviders = [
   new LeapCosmosExtensionProvider({
-    networks: [TERRA_MAINNET, TERRA_TESTNET],
+    networks: [TERRA_TESTNET, TERRA_MAINNET],
   }),
 
   new KeplrExtensionProvider({
-    networks: [TERRA_MAINNET, TERRA_TESTNET],
+    networks: [TERRA_TESTNET, TERRA_MAINNET],
   }),
 ];
 
 const mobileProviders = [
   new KeplrMobileProvider({
-    networks: [TERRA_MAINNET, TERRA_TESTNET],
+    networks: [TERRA_TESTNET, TERRA_MAINNET],
   }),
   new LeapCosmosMobileProvider({
-    networks: [TERRA_MAINNET, TERRA_TESTNET],
+    networks: [TERRA_TESTNET, TERRA_MAINNET],
   }),
 ];
 
