@@ -22,7 +22,7 @@ export const TERRA_TESTNET: Network = {
   name: "Terra 2 Testnet",
   chainId: "pisco-1",
   chainPrefix: "terra",
-  rpc: "https://pisco-rpc.terra.dev/",
+  rpc: "https://pisco-rpc.terra.dev/", //TBD https://junhoyeo.github.io/terra-docs/docs/develop/endpoints.html#public-rpc
   rest: "https://pisco-lcd.terra.dev/",
   bip44: {
     coinType: 330,
@@ -36,7 +36,7 @@ export const TERRA_TESTNET: Network = {
   gasPrice: "0.015uluna",
 };
 
-export const DEFAULT_MAINNET = TERRA_TESTNET;
+export const DEFAULT_NETWORK = TERRA_TESTNET;
 
 export const networks = [TERRA_TESTNET, TERRA_MAINNET];
 

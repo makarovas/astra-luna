@@ -90,6 +90,7 @@ export function Swap() {
               value={token1Amount}
               onChange={(e) => setToken1Amount(e.target.value)}
             />
+            <br />
             <p>Balance: {token1Balance.data}</p>
           </div>
 
@@ -108,7 +109,11 @@ export function Swap() {
             </option>
             <option value={TOKENS[currentNetworkId]!.astro}>ASTRO</option>
           </select>
+          <br />
+
           <input disabled value={swap.simulate.data?.amount ?? "0"} />
+          <br />
+
           <p>Balance: {token2Balance.data}</p>
           <button
             onClick={onSubmit}

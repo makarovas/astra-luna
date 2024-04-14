@@ -38,7 +38,7 @@ export default function Header() {
 
         {!wallet && (
           <ul>
-            {extensionProviders.map((extensionProvider, i) => {
+            {extensionProviders.map((extensionProvider) => {
               if (!extensionProvider.networks.has(currentNetworkId)) return;
               return (
                 <li key={extensionProvider.id}>

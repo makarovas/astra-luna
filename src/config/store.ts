@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { DEFAULT_MAINNET } from "./networks";
+import { DEFAULT_NETWORK } from "./networks";
 
+console.log(DEFAULT_NETWORK, "DEFAULT_NETWORK");
 interface ShuttlePortState {
   currentNetworkId: string;
   switchNetwork: (network: string) => void;
@@ -11,7 +12,7 @@ interface ShuttlePortState {
 export const useShuttlePortStore = create<ShuttlePortState>()(
   persist(
     (set) => ({
-      currentNetworkId: DEFAULT_MAINNET.chainId,
+      currentNetworkId: DEFAULT_NETWORK.chainId,
       switchNetwork: (network: string) => set({ currentNetworkId: network }),
     }),
     {

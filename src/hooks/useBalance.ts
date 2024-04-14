@@ -14,11 +14,12 @@ export default function useBalance(tokenAddress: string) {
   return useQuery({
     queryKey: ["balance", wallet?.id, tokenAddress],
     queryFn: async () => {
-      if (!wallet || !tokenAddress) {
+      if (!wallet || !tokenAddress || !process.env.NEXT_PUBLIC_API_PROXY) {
         return 0;
       }
-
-      const client = await CosmWasmClient.connect(wallet?.network.rpc || "");
+      const client = await CosmWasmClient.connect(
+        process.env.NEXT_PUBLIC_API_PROXY,
+      );
 
       if (
         tokenAddress.startsWith("u") ||
