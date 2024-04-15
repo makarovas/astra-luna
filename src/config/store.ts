@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 
 import { DEFAULT_NETWORK } from "./networks";
 
-console.log(DEFAULT_NETWORK, "DEFAULT_NETWORK");
 interface ShuttlePortState {
   currentNetworkId: string;
   switchNetwork: (network: string) => void;
