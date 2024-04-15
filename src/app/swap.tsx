@@ -26,6 +26,7 @@ export function Swap() {
   const [token1Amount, setToken1Amount] = useState("0");
 
   const token1Balance = useBalance(token1);
+
   const token2Balance = useBalance(token2);
   const [isSwapping, setIsSwapping] = useState(false);
 
@@ -87,13 +88,17 @@ export function Swap() {
               <option value={TOKENS[currentNetworkId]!.astro}>ASTRO</option>
             </select>
             <input
+              style={{ color: "black" }}
               value={token1Amount}
               onChange={(e) => setToken1Amount(e.target.value)}
             />
             <br />
-            <p>Balance: {token1Balance.data}</p>
-          </div>
+            <br />
+            <br />
+            <br />
 
+            <p>Balance1: {token1Balance.data}</p>
+          </div>
           <select
             value={token2}
             onChange={(e) => {
@@ -110,23 +115,23 @@ export function Swap() {
             <option value={TOKENS[currentNetworkId]!.astro}>ASTRO</option>
           </select>
           <br />
-
           <input disabled value={swap.simulate.data?.amount ?? "0"} />
           <br />
-
-          <p>Balance: {token2Balance.data}</p>
+          <br />
+          <p>Balance2: {token2Balance.data}</p>
           <button
+            style={{ border: "1px solid white" }}
             onClick={onSubmit}
             disabled={!swapFeeEstimate?.fee || isSwapping}
           >
-            {isSwapping ? "Processing..." : "Swap"}
+            {isSwapping ? "Processing..." : "Swap Here"}
           </button>
           {swapFeeEstimate?.fee && (
             <p>
-              Fee:{" "}
+              Fee:
               {BigNumber(swapFeeEstimate.fee.amount)
                 .div(DEFAULT_TOKEN_DECIMALS || 1)
-                .toString()}{" "}
+                .toString()}
               {swapFeeEstimate.fee.denom}
             </p>
           )}

@@ -67,7 +67,9 @@ function useSwapSimulate({
         return null;
       }
 
-      const client = await CosmWasmClient.connect(wallet.network.rpc || "");
+      const client = await CosmWasmClient.connect(
+        process.env.NEXT_PUBLIC_API_PROXY!,
+      );
 
       let assetInfo: AssetInfo = {
         token: { contract_addr: offerAssetAddress },

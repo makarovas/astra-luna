@@ -8,8 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   KeplrExtensionProvider,
   KeplrMobileProvider,
-  LeapCosmosExtensionProvider,
-  LeapCosmosMobileProvider,
 } from "@delphi-labs/shuttle-react";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -20,9 +18,9 @@ import { TERRA_MAINNET, TERRA_TESTNET } from "@/config/networks";
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
 
 const extensionProviders = [
-  new LeapCosmosExtensionProvider({
-    networks: [TERRA_TESTNET, TERRA_MAINNET],
-  }),
+  // new LeapCosmosExtensionProvider({
+  //   networks: [TERRA_TESTNET, TERRA_MAINNET],
+  // }),
 
   new KeplrExtensionProvider({
     networks: [TERRA_TESTNET, TERRA_MAINNET],
@@ -33,9 +31,9 @@ const mobileProviders = [
   new KeplrMobileProvider({
     networks: [TERRA_TESTNET, TERRA_MAINNET],
   }),
-  new LeapCosmosMobileProvider({
-    networks: [TERRA_TESTNET, TERRA_MAINNET],
-  }),
+  // new LeapCosmosMobileProvider({
+  //   networks: [TERRA_TESTNET, TERRA_MAINNET],
+  // }),
 ];
 
 import Toasty from "@/app/components/Toasty";

@@ -24,7 +24,6 @@ export default function Header() {
           <select
             id="currentNetwork"
             onChange={(e) => switchNetwork(e.target.value)}
-            value={currentNetworkId}
           >
             {networks.map((network) => (
               <option key={network.chainId} value={network.chainId}>
