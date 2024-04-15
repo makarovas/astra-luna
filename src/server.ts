@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import httpProxy from "http-proxy";
-import { type Socket } from "net";
+import { type Socket } from "net"; // Использование типа Socket из пакета net
 import next from "next";
 import { parse } from "url";
 
@@ -13,7 +13,6 @@ const proxy = httpProxy.createProxyServer();
 void app.prepare().then(() => {
   createServer((req: IncomingMessage, res: ServerResponse | Socket) => {
     const parsedUrl = parse(req.url!, true);
-
     const isResponse = (
       obj: ServerResponse | Socket,
     ): obj is ServerResponse => {
@@ -21,13 +20,11 @@ void app.prepare().then(() => {
     };
 
     if (req.headers.upgrade && /websocket/i.test(req.headers.upgrade)) {
-      // Подразумеваемая реализация WebSocket еще не добавлена
       if (isResponse(res)) {
         res.writeHead(501);
         res.end("WebSocket connections are not implemented.");
       }
-    } else if (parsedUrl.pathname?.startsWith("/api")) {
-      // Перенаправляем API запросы через прокси
+    } else if (parsedUrl.pathname?.startsWith("/api/proxy")) {
       if (isResponse(res)) {
         proxy.web(req, res, {
           target: "https://pisco-lcd.terra.dev",
@@ -41,7 +38,7 @@ void app.prepare().then(() => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 
-  proxy.on("error", (err, req, res) => {
+  proxy.on("error", (err, _req, res) => {
     const isResponse = (
       obj: ServerResponse | Socket,
     ): obj is ServerResponse => {

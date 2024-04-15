@@ -4,10 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "node --loader ts-node/esm ./src/server.ts",
     "build": "next build",
-    "dev": "next dev",
-    "lint": "next lint",
-    "start": "next start"
+    "start": "NODE_ENV=production node --loader ts-node/esm ./src/server.ts"
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "^0.30.1",
@@ -31,6 +30,7 @@
     "react-toastify": "^10.0.5",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
+    "ts-node": "^10.9.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
